@@ -1,5 +1,5 @@
-from RSSI.RSSICollector import RSSICollector
-from RSSI.RSSIBackgroundCollector import RSSIBackgroundCollector
+from modules.RSSI.RSSICollector import RSSICollector
+from modules.RSSI.RSSIBackgroundCollector import RSSIBackgroundCollector
 import time
 
 rssi_collector = RSSICollector()
