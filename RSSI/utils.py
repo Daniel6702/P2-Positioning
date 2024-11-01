@@ -34,6 +34,3 @@ def get_mac_address():
 
     print("MAC address not found for the internet-connected interface.")
     return None
-
-# Example Usage
-mac_address = get_mac_address()

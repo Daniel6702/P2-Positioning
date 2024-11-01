@@ -1,6 +1,6 @@
 import numpy as np
 from pywifi import PyWiFi, const
-from RSSI_Collector.mac_address import get_mac_address
+from RSSI.utils import get_mac_address
 from typing import Optional
 
 
