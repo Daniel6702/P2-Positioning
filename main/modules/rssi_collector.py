@@ -7,6 +7,7 @@ import queue
 import socket
 import psutil
 from modules.module import Module
+from config import COLLECTOR_INTERVAL
 
 def find_internet_connected_interface():
     """Finds the network interface used for the internet connection."""
@@ -46,7 +47,7 @@ class RSSICollector(Module):
     '''
     Class to collect RSSI values from the WiFi interface.
     '''
-    def __init__(self, interval: float = 0.1):
+    def __init__(self, interval: float = COLLECTOR_INTERVAL):
         self.device_id = get_mac_address()
         print(f"Device ID (MAC Address): {self.device_id}")
 
@@ -72,7 +73,7 @@ class RSSICollector(Module):
         '''Starts the background collection thread.'''
         if self._thread is None or not self._thread.is_alive():
             self._stop_event.clear()
-            self._thread = threading.Thread(target=self._run)
+            self._thread = threading.Thread(target=self._run, daemon=True)
             self._thread.start()
             print("RSSI background collection started.")
 

@@ -11,7 +11,7 @@ class TESTFilter(Module):
         self.start()
 
     def start(self):
-        self.process_thread = threading.Thread(target=self.process)
+        self.process_thread = threading.Thread(target=self.process, daemon=True)
         self.process_thread.start()
 
     def stop(self):

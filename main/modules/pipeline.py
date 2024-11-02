@@ -21,4 +21,7 @@ class Pipeline:
         '''
         Get the output queue of the last module in the pipeline.
         '''
+        if not self.modules:
+            raise ValueError("Pipeline has no modules.")
+        
         return self.modules[-1].output
