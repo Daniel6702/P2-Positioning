@@ -1,3 +1,3 @@
 # Main script to run the application
 
-from modules import RSSICollector
+#from modules import RSSICollector
