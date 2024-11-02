@@ -1,1 +1,1 @@
-from .RSSICollector import RSSICollector
+from modules.rssi_collector import RSSICollector
