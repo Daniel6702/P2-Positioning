@@ -26,6 +26,6 @@ class TESTFilter(Module):
                 break
 
             # Process the data here
-            abs_data = abs(data)
+            data = data
 
-            self.output.put(abs_data)
+            self.output.put(data)
