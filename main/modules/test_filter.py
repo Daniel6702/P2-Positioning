@@ -4,7 +4,7 @@ import threading
 
 class TESTFilter(Module):
     '''
-    Test filter that takes an input and returns the absolute value of the input.
+    Test filter
     '''
     def __init__(self, ):
         super().__init__()
