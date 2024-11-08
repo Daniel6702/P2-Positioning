@@ -89,7 +89,8 @@ class RSSICollector(Module):
         The method that runs in the background thread to collect RSSI periodically.
         '''
         while not self._stop_event.is_set():
-            self.collect_rssi()
+            rssi = self.collect_rssi()
+            self.output.put(rssi)
             time.sleep(self.interval)
 
 
@@ -123,7 +124,6 @@ class RSSICollector(Module):
             for network in scan_results:
                 if network.ssid == self.connected_ssid:
                     rssi = network.signal
-                    self.output.put(rssi)
                     return rssi
         except Exception as e:
             print(f"Error collecting RSSI: {e}")
