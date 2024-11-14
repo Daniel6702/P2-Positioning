@@ -53,6 +53,7 @@ class RSSICollector(Module):
 
         self.wifi = PyWiFi()
         self.iface = self.wifi.interfaces()[0]
+        
 
         if self.iface.status() == const.IFACE_CONNECTED:
             print("Wi-Fi interface is connected.")
@@ -83,7 +84,7 @@ class RSSICollector(Module):
             self._stop_event.set()
             self._thread.join()
             print("RSSI background collection stopped.")
-
+    
     def _run(self):
         '''
         The method that runs in the background thread to collect RSSI periodically.
