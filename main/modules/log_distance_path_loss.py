@@ -11,7 +11,7 @@ class LogdistancePathLossModel(Module):
     '''
     Log-distance path loss model that calibrates itself using initial RSSI measurements at a known distance.
     '''
-    def __init__(self, initial_distance, P_tx, d_0=1, calibration_samples=10):
+    def __init__(self, initial_distance = 1, P_tx = 20, d_0=1, calibration_samples=10, n=3):
         '''
         initial_distance: The known distance at which initial RSSI measurements are taken.
         P_tx: Transmitted power in dBm.
@@ -26,7 +26,7 @@ class LogdistancePathLossModel(Module):
         self.calibration_rssi_values = []
         self.calibrated = False
         self.PL_0 = None
-        self.n = None
+        self.n = n
         self.start()
 
     def start(self):
@@ -44,12 +44,13 @@ class LogdistancePathLossModel(Module):
         # Estimate PL_0
         self.PL_0 = self.P_tx - avg_rssi
         # Estimate n using the known initial distance
-        if self.initial_distance != self.d_0:
-            self.n = (self.P_tx - avg_rssi - self.PL_0) / (10 * math.log10(self.initial_distance / self.d_0))
-        else:
-            # If initial_distance equals d_0, path loss exponent n is undefined
-            # Assume n = 2 (free space) or any typical value
-            self.n = 2
+        if self.n is None:
+            if self.initial_distance != self.d_0:
+                self.n = (self.P_tx - avg_rssi - self.PL_0) / (10 * math.log10(self.initial_distance / self.d_0))
+            else:
+                # If initial_distance equals d_0, path loss exponent n is undefined
+                # Assume n = 2 (free space) or any typical value
+                self.n = 2
 
         self.calibrated = True
         print(f"Calibration completed: PL_0 = {self.PL_0:.2f}, n = {self.n:.2f}")
