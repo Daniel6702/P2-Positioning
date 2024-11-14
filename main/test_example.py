@@ -11,13 +11,11 @@ pipeline = Pipeline()
 
 rssi_collector = RSSICollector(interval=0.01)
 rssi_collector.start()
-mean_filter = MeanFilter()
-median_filter = MedianFilter()
-test_filter = TESTFilter()
-distance_estimator = LogdistancePathLossModel(initial_distance=1, P_tx=20)
+
+distance_estimator = LogdistancePathLossModel(n=2) # n=2 for free space path loss model
 
 pipeline.add_module(rssi_collector)
-pipeline.add_module(median_filter)
+
 pipeline.add_module(distance_estimator)
 
 output = pipeline.get_output()
