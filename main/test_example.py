@@ -3,18 +3,21 @@ from modules.rssi_collector import RSSICollector
 from modules.pipeline import Pipeline
 from modules.test_filter import TESTFilter
 from modules.log_distance_path_loss import LogdistancePathLossModel
+from modules.mean_filter import MeanFilter
+from modules.median_filter import MedianFilter
 import time
 
 pipeline = Pipeline()
 
-rssi_collector = RSSICollector(interval=0)
+rssi_collector = RSSICollector(interval=0.01)
 rssi_collector.start()
-
+mean_filter = MeanFilter()
+median_filter = MedianFilter()
 test_filter = TESTFilter()
 distance_estimator = LogdistancePathLossModel(initial_distance=1, P_tx=20)
 
 pipeline.add_module(rssi_collector)
-pipeline.add_module(test_filter)
+pipeline.add_module(median_filter)
 pipeline.add_module(distance_estimator)
 
 output = pipeline.get_output()
