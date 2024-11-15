@@ -28,7 +28,7 @@ class SavitzkyGolayFilter(Module):
                 break
             window.append(data)
             if len(window) > self.window_size:
-                window.pop(0)  # Keep the window at the correct size
+                window.pop(0)
             
             # Only apply the filter when the window is full
             if len(window) == self.window_size:

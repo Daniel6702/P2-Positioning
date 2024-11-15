@@ -94,7 +94,6 @@ class RSSICollector(Module):
             self.output.put(rssi)
             time.sleep(self.interval)
 
-
     def _get_connected_ssid(self) -> Optional[str]:
         '''
         Gets the SSID of the currently connected Wi-Fi network.
