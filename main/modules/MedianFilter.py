@@ -1,12 +1,12 @@
-from modules.module import Module
+from .Module import Module
 import threading
-from statistics import mean
+from statistics import median
 
-class MeanFilter(Module):
+class MedianFilter(Module):
     '''
     Mean Filter with configurable window size
     '''
-    def __init__(self, window_size=100):
+    def __init__(self, window_size=99):
         super().__init__()
         self.window_size = window_size  # Set the window size
         self.start()
@@ -29,5 +29,5 @@ class MeanFilter(Module):
             if len(window) > self.window_size:
                 window.pop(0)  # Keep the window at the correct size
             if len(window) == self.window_size:
-                mean_value = mean(window)
-                self.output.put(mean_value)
+                median_value = median(window)
+                self.output.put(median_value)

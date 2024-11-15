@@ -1,12 +1,10 @@
-import numpy as np
 from pywifi import PyWiFi, const
 from typing import Optional
 import threading
 import time
-import queue
 import socket
 import psutil
-from modules.module import Module
+from .Module import Module
 from config import COLLECTOR_INTERVAL
 
 def find_internet_connected_interface():

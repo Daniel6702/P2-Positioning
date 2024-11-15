@@ -1,7 +1,6 @@
 import numpy as np
 import threading
-import queue
-from modules.module import Module
+from .Module import Module
 
 class KalmanFilter(Module):
     def __init__(self,

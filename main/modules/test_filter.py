@@ -1,4 +1,4 @@
-from modules.module import Module
+from .Module import Module
 import queue
 import threading
 

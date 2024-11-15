@@ -1,14 +1,15 @@
-from modules.module import Module
+from .Module import Module
 import threading
-from statistics import median
+from scipy.signal import savgol_filter
 
-class MedianFilter(Module):
+class SavitzkyGolayFilter(Module):
     '''
-    Mean Filter with configurable window size
+    Savitzky-Golay Filter with configurable window size and polynomial order
     '''
-    def __init__(self, window_size=99):
+    def __init__(self, window_size=99, polyorder=3):
         super().__init__()
         self.window_size = window_size  # Set the window size
+        self.polyorder = polyorder      # Set the polynomial order
         self.start()
 
     def start(self):
@@ -27,7 +28,10 @@ class MedianFilter(Module):
                 break
             window.append(data)
             if len(window) > self.window_size:
-                window.pop(0)  # Keep the window at the correct size
+                window.pop(0)
+            
+            # Only apply the filter when the window is full
             if len(window) == self.window_size:
-                median_value = median(window)
-                self.output.put(median_value)
+                # Apply the Savitzky-Golay filter
+                smoothed_value = savgol_filter(window, window_length=self.window_size, polyorder=self.polyorder)[-1]
+                self.output.put(smoothed_value)
