@@ -25,7 +25,8 @@ class CSVLogger(threading.Thread):
         try:
             while self.running.is_set():
                 data_row = [time.time()]
-                for capture_q in self.outputs:
+
+                for capture_q in self.outputs:                    
                     if not capture_q.empty():
                         data = capture_q.get()
                         data_row.append(data)
