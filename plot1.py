@@ -2,22 +2,21 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
-import csv
 
-def read_csv(file_path):
+def read_csv_last_column(file_path):
     """
-    Reads the CSV file and returns a pandas DataFrame.
+    Reads the CSV file and returns a pandas DataFrame containing only the last column.
     Converts the timestamp to datetime objects.
     """
     # Read the CSV file without headers
     df = pd.read_csv(file_path, header=None)
 
-    # Ensure there are at least two columns to select
+    # Ensure there are at least two columns (timestamp and output)
     if df.shape[1] < 2:
         raise ValueError("CSV file does not contain enough columns.")
 
-    # Select the first and last columns
-    df = df.iloc[:, [0, -1]]  # Keeps columns at index 0 and last index
+    # Select the first (timestamp) and last columns
+    df = df.iloc[:, [0, -1]]  # Columns at index 0 and last index
 
     # Rename columns for clarity
     df.columns = ['timestamp', 'output']
@@ -28,22 +27,22 @@ def read_csv(file_path):
 
     return df
 
-def plot_data(df):
+def plot_last_column(df):
     """
-    Plots the output data against time.
+    Plots the last column data against time.
     """
     plt.figure(figsize=(12, 6))
-    
+
     # Plot the output column
-    plt.plot(df['datetime'], df['output'], label='Output', marker='o', linestyle='-')
+    plt.plot(df['datetime'], df['output'], label='Last Column Output', marker='o', linestyle='-')
 
     # Formatting the x-axis for better readability
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
     plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
 
     plt.xlabel('Time')
-    plt.ylabel('Output Values')
-    plt.title('Pipeline Module Outputs Over Time')
+    plt.ylabel('Output Value')
+    plt.title('Last Column Output Over Time')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -56,14 +55,11 @@ def main():
     csv_file = 'rssi_output.csv'
 
     try:
-        # Read the CSV data
-        df = read_csv(csv_file)
-
-        # Handle missing data by forward filling or interpolation if necessary
-        # Here, we'll simply plot the available data points
+        # Read the CSV data (only last column)
+        df = read_csv_last_column(csv_file)
 
         # Plot the data
-        plot_data(df)
+        plot_last_column(df)
 
     except FileNotFoundError:
         print(f"Error: The file '{csv_file}' was not found.")
