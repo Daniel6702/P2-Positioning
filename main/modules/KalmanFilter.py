@@ -1,24 +1,30 @@
 import numpy as np
-import threading
-from .Module import Module
+from utils.event_system import event_system, Event
 
-class KalmanFilter(Module):
+class KalmanFilter:
+    """
+    Kalman Filter for filtering RSSI data using an event-driven system.
+    """
     def __init__(self,
                  dt: float = 1.0,
                  process_var: float = 1e-4,
                  measurement_var: float = 1.0,
                  initial_state: list = [0.0],
-                 initial_uncertainty: np.ndarray = np.array([[1.0]])):
+                 initial_uncertainty: np.ndarray = np.array([[1.0]]),
+                 input_topic: str = "rssi_input",
+                 output_topic: str = "rssi_filtered"):
         """
-        Initializes the Kalman Filter for filtering RSSI data.
-        
-        :param dt: Time step between updates.
-        :param process_var: Process variance (uncertainty in the model).
-        :param measurement_var: Measurement variance (uncertainty in RSSI).
-        :param initial_state: Initial state vector [RSSI].
-        :param initial_uncertainty: Initial uncertainty (covariance matrix).
+        Initializes the Kalman Filter.
+
+        Parameters:
+        - dt: Time step between updates.
+        - process_var: Process variance (uncertainty in the model).
+        - measurement_var: Measurement variance (uncertainty in RSSI).
+        - initial_state: Initial state vector [RSSI].
+        - initial_uncertainty: Initial uncertainty (covariance matrix).
+        - input_topic: Event topic to subscribe to for incoming RSSI data.
+        - output_topic: Event topic to publish the filtered RSSI values.
         """
-        super().__init__()
         # Time step
         self.dt = dt
 
@@ -39,39 +45,43 @@ class KalmanFilter(Module):
         self.Q = np.array([[process_var]])  # Process noise
         self.R = np.array([[measurement_var]])  # Measurement noise
 
-        # Start the processing thread
-        self.thread = threading.Thread(target=self.run, daemon=True)
-        self.thread.start()
+        self.input_topic = input_topic
+        self.output_topic = output_topic
 
-    def run(self):
+        # Subscribe to the input topic
+        event_system.subscribe(self.input_topic, self.handle_event)
+        event_system.subscribe("clear", self.clear)
+
+    def clear(self):
         """
-        Continuously processes incoming RSSI measurements from the input queue,
-        applies the Kalman Filter, and outputs the filtered RSSI.
+        Clears the state vector and covariance matrix.
         """
-        while True:
-            try:
-                # Retrieve the next RSSI measurement from the input queue
-                data = self.input.get()
-                if data is None:
-                    # Sentinel value to terminate the thread
-                    break
+        self.x.fill(0.0)
+        self.P.fill(0.0)
+    
+    def handle_event(self, event: Event):
+        """
+        Handles incoming RSSI data events and processes them through the Kalman Filter.
 
-                # Check if the data is a list (multiple RSSI measurements)
-                if isinstance(data, list):
-                    for rssi in data:
-                        self.process_rssi(rssi)
-                else:
-                    # Assume it's a single RSSI measurement
-                    self.process_rssi(data)
+        Parameters:
+        - event: The incoming RSSI measurement.
+        """
+        data = event.data
 
-            except Exception as e:
-                print(f"KalmanFilter encountered an error: {e}")
+        # Check if the data is a list (multiple RSSI measurements)
+        if isinstance(data, list):
+            for rssi in data:
+                self.process_rssi(rssi)
+        else:
+            # Assume it's a single RSSI measurement
+            self.process_rssi(data)
 
     def process_rssi(self, rssi: float):
         """
         Processes a single RSSI measurement through the Kalman Filter.
-        
-        :param rssi: Received Signal Strength Indicator.
+
+        Parameters:
+        - rssi: Received Signal Strength Indicator.
         """
         # Prediction step
         self.predict()
@@ -82,8 +92,9 @@ class KalmanFilter(Module):
         # Extract the filtered RSSI
         filtered_rssi = self.x[0]
 
-        # Output the filtered RSSI to the next module
-        self.output.put(filtered_rssi)
+        # Publish the filtered RSSI to the output topic
+        output_event = Event(self.output_topic, filtered_rssi)
+        event_system.publish(self.output_topic, output_event)
 
     def predict(self):
         """
@@ -98,8 +109,9 @@ class KalmanFilter(Module):
     def update(self, measurement: float):
         """
         Update step of the Kalman Filter using the RSSI measurement.
-        
-        :param measurement: Received Signal Strength Indicator.
+
+        Parameters:
+        - measurement: Received Signal Strength Indicator.
         """
         # Measurement residual
         y = measurement - (self.H @ self.x)
@@ -116,11 +128,3 @@ class KalmanFilter(Module):
         # Update the covariance matrix
         I = np.eye(self.P.shape[0])
         self.P = (I - K @ self.H) @ self.P
-
-kalman_filter = KalmanFilter(
-    dt=0.01,
-    process_var=1e-4,
-    measurement_var=1.0,
-    initial_state=[-40.0],
-    initial_uncertainty=np.array([[1.0]])
-)

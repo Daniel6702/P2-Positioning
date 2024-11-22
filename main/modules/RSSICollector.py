@@ -4,8 +4,8 @@ import threading
 import time
 import socket
 import psutil
-from .Module import Module
 from config import COLLECTOR_INTERVAL
+from utils.event_system import event_system, Event
 
 def find_internet_connected_interface():
     """Finds the network interface used for the internet connection."""
@@ -41,17 +41,19 @@ def get_mac_address():
     print("MAC address not found for the internet-connected interface.")
     return None
 
-class RSSICollector(Module):
+class RSSICollector():
     '''
     Class to collect RSSI values from the WiFi interface.
+    Publishes the collected RSSI values to the event system.
+    TOPIC: "rssi"
     '''
-    def __init__(self, interval: float = COLLECTOR_INTERVAL):
+    def __init__(self, output_topic: str = "rssi"):
         self.device_id = get_mac_address()
         print(f"Device ID (MAC Address): {self.device_id}")
 
         self.wifi = PyWiFi()
         self.iface = self.wifi.interfaces()[0]
-        
+        self.output_topic = output_topic        
 
         if self.iface.status() == const.IFACE_CONNECTED:
             print("Wi-Fi interface is connected.")
@@ -63,34 +65,14 @@ class RSSICollector(Module):
         else:
             print("Wi-Fi interface is not connected or ready.")
             self.connected_ssid = None
-
-        self._stop_event = threading.Event()
-        self._thread = None
-        self.interval = interval
-
-    def start(self):
-        '''Starts the background collection thread.'''
-        if self._thread is None or not self._thread.is_alive():
-            self._stop_event.clear()
-            self._thread = threading.Thread(target=self._run, daemon=True)
-            self._thread.start()
-            print("RSSI background collection started.")
-
-    def stop(self):
-        '''Stops the background collection thread.'''
-        if self._thread is not None:
-            self._stop_event.set()
-            self._thread.join()
-            print("RSSI background collection stopped.")
     
-    def _run(self):
+    def run(self):
         '''
         The method that runs in the background thread to collect RSSI periodically.
         '''
-        while not self._stop_event.is_set():
-            rssi = self.collect_rssi()
-            self.output.put(rssi)
-            time.sleep(self.interval)
+        rssi = self.collect_rssi()
+        event = Event(self.output_topic, rssi)
+        event_system.publish(self.output_topic, event)
 
     def _get_connected_ssid(self) -> Optional[str]:
         '''

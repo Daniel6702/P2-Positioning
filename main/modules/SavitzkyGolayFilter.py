@@ -1,37 +1,64 @@
-from .Module import Module
-import threading
 from scipy.signal import savgol_filter
+from utils.event_system import event_system, Event
 
-class SavitzkyGolayFilter(Module):
+class SavitzkyGolayFilter:
     '''
-    Savitzky-Golay Filter with configurable window size and polynomial order
+    Savitzky-Golay Filter with configurable window size and polynomial order using an event-driven system.
     '''
-    def __init__(self, window_size=99, polyorder=3):
-        super().__init__()
-        self.window_size = window_size  # Set the window size
-        self.polyorder = polyorder      # Set the polynomial order
-        self.start()
+    def __init__(self, window_size=99, polyorder=3, input_topic="input", output_topic="savgol"):
+        '''
+        Initializes the SavitzkyGolayFilter.
 
-    def start(self):
-        self.process_thread = threading.Thread(target=self.process, daemon=True)
-        self.process_thread.start()
+        Parameters:
+        - window_size: The size of the moving window for applying the filter. Must be a positive odd integer.
+        - polyorder: The order of the polynomial used to fit the samples. polyorder must be less than window_size.
+        - input_topic: Event topic to subscribe to for input data.
+        - output_topic: Event topic to publish the filtered values.
+        '''
+        if window_size % 2 == 0:
+            raise ValueError("window_size must be a positive odd integer.")
+        if polyorder >= window_size:
+            raise ValueError("polyorder must be less than window_size.")
+        
+        self.window_size = window_size
+        self.polyorder = polyorder
+        self.input_topic = input_topic
+        self.output_topic = output_topic
+        self.window = []
+        
+        # Subscribe to the input topic
+        event_system.subscribe(self.input_topic, self.handle_event)
+        event_system.subscribe("clear", self.clear)
 
-    def stop(self):
-        self.input.put(None)
-        self.process_thread.join()
+    def clear(self):
+        '''
+        Clears the window.
+        '''
+        self.window.clear()
 
-    def process(self):
-        window = []
-        while True:
-            data = self.input.get()
-            if data is None:
-                break
-            window.append(data)
-            if len(window) > self.window_size:
-                window.pop(0)
+    def handle_event(self, event: Event):
+        '''
+        Handles incoming data events for the Savitzky-Golay filter.
+
+        Parameters:
+        - event: The new data point to process.
+        '''
+        self.window.append(event.data)
+        
+        # Maintain the window size
+        if len(self.window) > self.window_size:
+            self.window.pop(0)
+        
+        # Only apply the filter when the window is full
+        if len(self.window) == self.window_size:
+            # Apply the Savitzky-Golay filter
+            smoothed_values = savgol_filter(self.window, window_length=self.window_size, polyorder=self.polyorder)
+            smoothed_value = smoothed_values[-1]  # Take the latest smoothed value
             
-            # Only apply the filter when the window is full
-            if len(window) == self.window_size:
-                # Apply the Savitzky-Golay filter
-                smoothed_value = savgol_filter(window, window_length=self.window_size, polyorder=self.polyorder)[-1]
-                self.output.put(smoothed_value)
+            # Create and publish the output event
+            output_event = Event(self.output_topic, smoothed_value)
+            event_system.publish(self.output_topic, output_event)
+        else:
+            # Publish the raw data if the window is not filled
+            output_event = Event(self.output_topic, event.data)
+            event_system.publish(self.output_topic, output_event)
