@@ -50,15 +50,10 @@ class SavitzkyGolayFilter:
             self.window.pop(0)
         
         # Only apply the filter when the window is full
-        if len(self.window) == self.window_size:
-            # Apply the Savitzky-Golay filter
-            smoothed_values = savgol_filter(self.window, window_length=self.window_size, polyorder=self.polyorder)
-            smoothed_value = smoothed_values[-1]  # Take the latest smoothed value
-            
-            # Create and publish the output event
-            output_event = Event(self.output_topic, smoothed_value)
-            event_system.publish(self.output_topic, output_event)
-        else:
-            # Publish the raw data if the window is not filled
-            output_event = Event(self.output_topic, event.data)
-            event_system.publish(self.output_topic, output_event)
+        smoothed_values = savgol_filter(self.window, window_length=len(self.window), polyorder=self.polyorder)
+        smoothed_value = smoothed_values[-1]  # Take the latest smoothed value
+        
+        # Create and publish the output event
+        output_event = Event(self.output_topic, smoothed_value)
+        event_system.publish(self.output_topic, output_event)
+

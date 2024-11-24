@@ -40,13 +40,11 @@ class MeanFilter():
             self.window.pop(0)
 
         # If the window is filled, calculate and publish the mean
-        if len(self.window) == self.window_size:
+        try:
             mean_value = mean(self.window)
+        except:
+            mean_value = event.data
 
-            # Publish the mean value
-            output_event = Event(self.output_topic, mean_value)
-            event_system.publish(self.output_topic, output_event)
-        else:
-            # Publish the raw data if the window is not filled
-            output_event = Event(self.output_topic, event.data)
-            event_system.publish(self.output_topic, output_event)
+        # Publish the mean value
+        output_event = Event(self.output_topic, mean_value)
+        event_system.publish(self.output_topic, output_event)

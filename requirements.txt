@@ -3,3 +3,4 @@ comtypes
 numpy
 psutil
 scipy
+fastdtw

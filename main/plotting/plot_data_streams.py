@@ -48,8 +48,7 @@ def plot_data_streams(csv_file_paths):
             filename = os.path.basename(file_path)
             parts = filename.split('_')
             if len(parts) != 2:
-                print(f"Warning: Unexpected filename format '{filename}'. Skipping.")
-                continue
+                parts = parts[:2]
             
             test_name = parts[0]
             stream_id = parts[1].replace('.csv', '')
@@ -92,5 +91,6 @@ def plot_data_streams(csv_file_paths):
 
 
 if __name__ == "__main__":
-    files = ['mean_logs\mean_distance.csv', 'mean_logs\mean_mean.csv', 'mean_logs\mean_rssi.csv']
+    #files = [r'data\test6\mean\mean_mean.csv',r'data\test6\mean\mean_rssi.csv']
+    files = [r'data\dynamic\test4\mean\test4_mean.csv',r'data\dynamic\test4\mean\test4_rssi.csv']
     plot_data_streams(files)

@@ -10,7 +10,7 @@ class LogdistancePathLossModel():
         initial_distance=1, 
         P_tx=20, 
         d_0=1, 
-        calibration_samples=10, 
+        calibration_samples=8, 
         n=3, 
         input_topic="rssi",
         output_topic="distance", 

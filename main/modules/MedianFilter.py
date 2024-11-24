@@ -42,13 +42,8 @@ class MedianFilter:
             self.window.pop(0)
         
         # Calculate and publish the median when the window is full
-        if len(self.window) == self.window_size:
-            median_value = median(self.window)
-            
-            # Create and publish the output event
-            output_event = Event(self.output_topic, median_value)
-            event_system.publish(self.output_topic, output_event)
-        else:
-            # Publish the raw data if the window is not filled
-            output_event = Event(self.output_topic, event.data)
-            event_system.publish(self.output_topic, output_event)
+        median_value = median(self.window)
+        
+        # Create and publish the output event
+        output_event = Event(self.output_topic, median_value)
+        event_system.publish(self.output_topic, output_event)
