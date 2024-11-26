@@ -92,5 +92,6 @@ def plot_data_streams(csv_file_paths):
 
 if __name__ == "__main__":
     #files = [r'data\test6\mean\mean_mean.csv',r'data\test6\mean\mean_rssi.csv']
-    files = [r'data\dynamic\test4\mean\test4_mean.csv',r'data\dynamic\test4\mean\test4_rssi.csv']
+    #files = [r'data\test15\mean\mean_mean.csv',r'data\test15\mean\mean_rssi.csv']
+    files = [r'data\test15\mean\mean_distance_mean.csv',r'data\test15\raw\raw_distance_raw.csv']
     plot_data_streams(files)

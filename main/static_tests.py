@@ -2,14 +2,17 @@ from modules import *
 from static_analyzer import StaticAnalyzer
 from utils.logger import Logger
 
-INTERVAL = 5
-N = 1.75
-DISTANCES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+INTERVAL = 2
+N = 1.8
+#DISTANCES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+#DISTANCES = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23]
+DISTANCES = [1, 4, 8, 12, 16, 20, 24]
+
 #DISTANCES = [1, 2]
 NUM_SAMPLES = 20
 #NUM_SAMPLES = 10
-WINDOW = 6
-TEST = 'test6'
+WINDOW = 10
+TEST = 'test15'
 
 
 # ----------------- NO filter Pipeline -----------------

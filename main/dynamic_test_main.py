@@ -7,8 +7,8 @@ from dynamic_analyzer import DynamicAnalyzer
 
 INTERVAL = 0.1
 
-TEST = 'test4'
-N = 1.8
+TEST = 'test7'
+N = 1.7
 WINDOW = 26
 
 def setup_mean_dynamic_test():

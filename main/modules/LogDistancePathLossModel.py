@@ -10,7 +10,7 @@ class LogdistancePathLossModel():
         initial_distance=1, 
         P_tx=20, 
         d_0=1, 
-        calibration_samples=8, 
+        calibration_samples=16, 
         n=3, 
         input_topic="rssi",
         output_topic="distance", 
@@ -64,9 +64,12 @@ class LogdistancePathLossModel():
             raise ValueError("Model is not calibrated.")
 
         # Log-distance path loss formula to estimate distance
-        exponent = (self.P_tx - rssi - self.PL_0) / (10 * self.n)
-        distance = self.d_0 * (10 ** exponent)
-        distance = round(distance, 4)  # Optional: round for readability
+        try:
+            exponent = (self.P_tx - rssi - self.PL_0) / (10 * self.n)
+            distance = self.d_0 * (10 ** exponent)
+            distance = round(distance, 4)  # Optional: round for readability
+        except:
+            distance = 0
 
         # Publish the estimated distance
         output_event = Event(self.output_topic, distance)

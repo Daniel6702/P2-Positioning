@@ -6,7 +6,7 @@ from utils.logger import Logger
 from static_analyzer import StaticAnalyzer
 from static_tests import setup_mean_static_test, setup_raw_static_test, setup_savitzky_static_test, setup_median_static_test, setup_kalman_static_test
 
-INTERVAL = 5
+INTERVAL = 2
 
 rssi_collector = RSSICollector(output_topic="rssi")
 

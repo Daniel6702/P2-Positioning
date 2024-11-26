@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Read the results from CSV
-df = pd.read_csv('data/test4/mean/results_mean.csv')
+df = pd.read_csv('data/test15/mean/results_mean.csv')
 
 # Create a single figure with two subplots
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))  # 1 row, 2 columns

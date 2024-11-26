@@ -28,12 +28,12 @@ class DynamicAnalyzer:
         # Define the route as a list of segments with updated speed and timings
         self.route = [
             {'start_time': 0, 'end_time': 5, 'action': 'stand', 'position': 1.0},
-            {'start_time': 5, 'end_time': 23, 'action': 'walk', 'start_position': 1.0, 'end_position': 10.0, 'speed': 0.5},
-            {'start_time': 23, 'end_time': 28, 'action': 'stand', 'position': 10.0},
-            {'start_time': 28, 'end_time': 46, 'action': 'walk', 'start_position': 10.0, 'end_position': 1.0, 'speed': 0.5},
-            {'start_time': 46, 'end_time': 51, 'action': 'stand', 'position': 1.0}
+            {'start_time': 5, 'end_time': 51, 'action': 'walk', 'start_position': 1.0, 'end_position': 24.0, 'speed': 0.5},
+            {'start_time': 51, 'end_time': 56, 'action': 'stand', 'position': 24.0},
+            {'start_time': 56, 'end_time': 102, 'action': 'walk', 'start_position': 24.0, 'end_position': 1.0, 'speed': 0.5},
+            {'start_time': 102, 'end_time': 107, 'action': 'stand', 'position': 1.0}
         ]
-        self.total_duration = 51  # Updated total duration of the route in seconds
+        self.total_duration = 107  # Updated total duration of the route in seconds
 
         # Subscribe to relevant topics
         event_system.subscribe(self.input_topic, self.input)
@@ -133,7 +133,6 @@ class DynamicAnalyzer:
             else:
                 # When walking backwards, adjust meter calculation
                 current_meter = int(round(actual_distance))
-
             if self.last_beeped_meter is None or current_meter != self.last_beeped_meter:
                 self.play_beep()
                 self.last_beeped_meter = current_meter
@@ -182,4 +181,3 @@ class DynamicAnalyzer:
             print(f"RMSE: {rmse:.2f} m")
         else:
             print("\nNo data collected to write.")
-
