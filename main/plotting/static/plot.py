@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Read the results from CSV
-df = pd.read_csv('data/test15/mean/results_mean.csv')
+df = pd.read_csv('data/test4/mean/results_mean.csv')
 
 # Create a single figure with two subplots
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))  # 1 row, 2 columns
@@ -30,7 +30,7 @@ axes[0].set_ylabel('Estimated Distance (m)')
 axes[0].set_title('Estimated Distance vs. True Distance')
 axes[0].legend()
 axes[0].grid(True)
-
+'''
 # Plot 2: Error Metrics vs. Distance
 axes[1].plot(df['distance'], df['bias'], label='Bias', marker='o')
 axes[1].plot(df['distance'], df['MAE'], label='MAE', marker='s')
@@ -40,7 +40,7 @@ axes[1].set_ylabel('Error (m)')
 axes[1].set_title('Error Metrics vs. Distance')
 axes[1].legend()
 axes[1].grid(True)
-
+'''
 # Adjust layout for better readability
 plt.tight_layout()
 

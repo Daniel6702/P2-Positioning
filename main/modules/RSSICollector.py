@@ -1,6 +1,5 @@
 from pywifi import PyWiFi, const
 from typing import Optional
-import threading
 import time
 import socket
 import psutil

@@ -156,6 +156,6 @@ def plot_dynamic_results(csv_file="dynamic_results.csv", time_shift=0.0):
     plt.show()
 
 if __name__ == "__main__":
-    file = r'data\dynamic\test7\mean\dynamic_results_mean.csv' 
-    time_shift = -3
+    file = r'data\dynamic\test10\mean\dynamic_results_mean.csv' 
+    time_shift = -2
     plot_dynamic_results(file, time_shift)

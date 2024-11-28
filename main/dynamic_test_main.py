@@ -7,13 +7,13 @@ from dynamic_analyzer import DynamicAnalyzer
 
 INTERVAL = 0.1
 
-TEST = 'test7'
-N = 1.7
-WINDOW = 26
+TEST = 'test14'
+N = 1.8
+WINDOW = 50
 
 def setup_mean_dynamic_test():
     mean_filter = MeanFilter(window_size=WINDOW, output_topic="mean")
-    distance_estimator_mean = LogdistancePathLossModel(n=N, input_topic="mean", output_topic="distance_mean", calibration_samples=30)
+    distance_estimator_mean = LogdistancePathLossModel(n=N, input_topic="mean", output_topic="distance_mean", calibration_samples=50)
     dynamic_analyzer = DynamicAnalyzer(
         results_file=f"data/dynamic/{TEST}/mean/dynamic_results_mean.csv",
         input_topic="distance_mean",
@@ -23,7 +23,7 @@ def setup_mean_dynamic_test():
     return (mean_filter, distance_estimator_mean, dynamic_analyzer, logger)
 
 def setup_raw_dynamic_test():
-    distance_estimator_raw = LogdistancePathLossModel(n=N, input_topic="rssi", output_topic="distance_raw", calibration_samples=30)
+    distance_estimator_raw = LogdistancePathLossModel(n=N, input_topic="rssi", output_topic="distance_raw", calibration_samples=50)
     dynamic_analyzer = DynamicAnalyzer(
         results_file=f"data/dynamic/{TEST}/raw/dynamic_results_raw.csv",
         input_topic="distance_raw",
@@ -33,7 +33,7 @@ def setup_raw_dynamic_test():
 
 def setup_savitzky_dynamic_test():
     savitzky_filter = SavitzkyGolayFilter(window_size=WINDOW-1, polyorder=0, input_topic="rssi", output_topic="savgol")
-    distance_estimator_savitzky = LogdistancePathLossModel(n=N, input_topic="savgol", output_topic="distance_savitzky", calibration_samples=30)
+    distance_estimator_savitzky = LogdistancePathLossModel(n=N, input_topic="savgol", output_topic="distance_savitzky", calibration_samples=50)
     dynamic_analyzer = DynamicAnalyzer(
         results_file=f"data/dynamic/{TEST}/savitzky/dynamic_results_savitzky.csv",
         input_topic="distance_savitzky",
@@ -43,7 +43,7 @@ def setup_savitzky_dynamic_test():
 
 def setup_median_dynamic_test():
     median_filter = MedianFilter(window_size=WINDOW-1, input_topic="rssi", output_topic="median")
-    distance_estimator_median = LogdistancePathLossModel(n=N, input_topic="median", output_topic="distance_median", calibration_samples=30)
+    distance_estimator_median = LogdistancePathLossModel(n=N, input_topic="median", output_topic="distance_median", calibration_samples=50)
     dynamic_analyzer = DynamicAnalyzer(
         results_file=f"data/dynamic/{TEST}/median/dynamic_results_median.csv",
         input_topic="distance_median",
@@ -53,7 +53,7 @@ def setup_median_dynamic_test():
 
 def setup_kalman_dynamic_test():
     kalman_filter = KalmanFilter(dt=INTERVAL, process_var=0.005, input_topic="rssi", output_topic="kalman")
-    distance_estimator_kalman = LogdistancePathLossModel(n=N, input_topic="kalman", output_topic="distance_kalman", calibration_samples=30)
+    distance_estimator_kalman = LogdistancePathLossModel(n=N, input_topic="kalman", output_topic="distance_kalman", calibration_samples=50)
     dynamic_analyzer = DynamicAnalyzer(
         results_file=f"data/dynamic/{TEST}/kalman/dynamic_results_kalman.csv",
         input_topic="distance_kalman",

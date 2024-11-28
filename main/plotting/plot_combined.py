@@ -153,12 +153,12 @@ def plot_data_streams(ax, csv_file_paths):
 
 # Main script to combine the plots
 if __name__ == "__main__":
-    dynamic_file = r'data\dynamic\test4\savitzky\dynamic_results_savitzky.csv'
+    dynamic_file = r'data\dynamic\test10\mean\dynamic_results_mean.csv'
     time_shift = -2.3
 
     data_stream_files = [
-        r'data\dynamic\test4\savitzky\test4_rssi.csv',
-        r'data\dynamic\test4\savitzky\test4_savgol.csv',
+        r'data\dynamic\test10\mean\test10_rssi.csv',
+        r'data\dynamic\test10\mean\test10_mean.csv',
     ]
 
     # Create a figure with two subplots
